@@ -13,49 +13,37 @@ p=4
 S1<-signaldata("laplace",2,n)
 S2<-signaldata("unif",2,n)
 S<-rbind(S1,S2)
-#dim(S)
-
-plot(S[1,],type="l")
-hist(S[1,],breaks="Scott",freq = FALSE)
-lines(density(S[1,]), col = "orange", lwd = 2)
-rug(S[1,])
 
 
-write(S, file="./laplacedata01.txt")
-# scan 関数で再読み込み(結果はベクトル)
-#S <- matrix(scan("uniformdata01.txt"), ncol=n) #ok
-#S[,1:2] #ok
-#dim(S)
-
+par(mfrow=c(2,4))
+for(i in 1:4){
+    plot(S[i,],type="l")
+    hist(S[i,],breaks="Scott",freq = FALSE)
+    lines(density(S[i,]), col = "orange", lwd = 2)
+    rug(S[i,])
+}
 A<-matrix(runif(p^2,-sqrt(3),sqrt(3)),p)
-#write(A, file="./A01.txt")
-# scan 関数で再読み込み(結果はベクトル)
-#A <- matrix(scan("A01.txt"), ncol=p)
 A<-t(A)
 dim(A)
 
 X=A%*%S #p,n
 dim(X)
-X[,1:2] #ok
 X<-X-apply(t(X),2,mean) #
-plot(X[1,],type="l")
-hist(X[1,],breaks="Scott",freq = FALSE)
-#plot(density(X[1,]))
-lines(density(X[1,]), col = "orange", lwd = 2)
-rug(X[1,])
 
+par(mfrow=c(2,4))
+for(i in 1:4){
+    plot(X[i,],type="l")
+    hist(X[i,],breaks="Scott",freq = FALSE)
+    lines(density(X[i,]), col = "orange", lwd = 2)
+    rug(X[i,])
+}
 X<-t(X)
 
 
 
 ###################
 
-m=4 #独立成分の数
-#W<-diag(rep(1,m)) #初期値:単位行列
-#W<-original_unifdata(m,m)
-#write(W, file="./W_init01.txt")
-# scan 関数で再読み込み(結果はベクトル)
-
+m=20 #独立成分の数
 
 result<-fastICAmult(X,m)
 V<-result$V
@@ -65,22 +53,26 @@ W<-result$W
 W
 
 Z<-result$Z
+par(mfrow=c(2,4))
+for(i in 1:4){
+    plot(Z[i,],type="l")
+    hist(Z[i,],breaks="Scott",freq = FALSE)
+    lines(density(Z[i,]), col = "orange", lwd = 2)
+    rug(Z[i,])
+}
 
 W%*%t(W)
-t(W)%*%V%*%A
+t(W)%*%V%*%A #順序行列になれば成功
 
 restoredsignal<-result$restoredsignal
 
-#split.screen(c(1,3),screen=2)
-
 par(mfrow=c(2,2))
-#plot(restoredsignal[1,],type="l") #
 for(i in 1:4){
     hist(restoredsignal[i,],breaks="Scott",freq = FALSE)
-    #plot(density(X[1,]))
     lines(density(restoredsignal[i,]), col = "orange", lwd = 2)
     rug(restoredsignal[i,])
 }
+
 
 ###################################################
 S=0
