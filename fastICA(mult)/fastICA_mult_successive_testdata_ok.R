@@ -10,7 +10,7 @@ source("signaldata.R")
 n=10000
 p=5
 dim(signaldata("unif",p,n))
-S<-signaldata(p,n) #p,n
+S<-signaldata("unif"p,n) #p,n
 #plot(S[1,],type="l")
 #hist(S[1,])
 #plot(S[2,],type="l")
@@ -50,11 +50,11 @@ V<-E%*%Dm12%*%t(E) #ok
 #S<-original_unifdata(p,n) #p,n
 #write(S, file="./whitinguniformdata01.txt")
 # scan 関数で再読み込み(結果はベクトル)
-S <- matrix(scan("whitinguniformdata01.txt"), ncol=n)
-X=A%*%S #p,n
-X[,1:2]
-X<-X-apply(t(X),2,mean) #ok
-X[,1:2]
+#S <- matrix(scan("whitinguniformdata01.txt"), ncol=n)
+#X=A%*%S #p,n
+#X[,1:2]
+#X<-X-apply(t(X),2,mean) #ok
+#X[,1:2]
 Z=V%*%X #ok
 Z[,1:2]
 dim(Z)

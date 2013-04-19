@@ -11,6 +11,8 @@ n=10000
 p=5
 #dim(signaldata("unif",p,n))
 S<-signaldata("laplace",p,n) #p,n
+S<-signaldata("unif",p,n) #p,n
+
  plot(S[1,],type="l")
  hist(S[1,])
  plot(S[2,],type="l")
@@ -48,7 +50,7 @@ m=5 #独立成分の数
 # scan 関数で再読み込み(結果はベクトル)
 
 
-fastICAmult<-function(X,m,W=original_unifdata(m,m),maxcnt=10000,epsilon=0.0001){
+fastICAmult<-function(X,m,W=signaldata("unif",m,m),maxcnt=10000,epsilon=0.0001){
     if(dim(X)[2]>dim(X)[1]){ #行:siganl,列:標本
         X<-t(X);
     }

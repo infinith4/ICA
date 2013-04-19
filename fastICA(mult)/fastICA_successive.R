@@ -10,13 +10,19 @@ source("signaldata.R")
 n=10000
 p=5
 #dim(signaldata("unif",p,n))
+S<-signaldata("laplace",p,n) #p,n
 S<-signaldata("unif",p,n) #p,n
- plot(S[1,],type="l")
- hist(S[1,])
- plot(S[2,],type="l")
- hist(S[2,])
- plot(S[3,],type="l")
- hist(S[3,])
+
+plot(S[1,],type="l")
+hist(S[1,],breaks="Scott",freq = FALSE)
+#plot(density(X[1,]))
+lines(density(S[1,]), col = "orange", lwd = 2)
+rug(S[1,])
+
+#  plot(S[2,],type="l")
+#  hist(S[2,])
+#  plot(S[3,],type="l")
+#  hist(S[3,])
 
 #write(S, file="./uniformdata01.txt")
 # scan 関数で再読み込み(結果はベクトル)
@@ -35,6 +41,16 @@ X=A%*%S #p,n
 dim(X)
 X[,1:2] #ok
 X<-X-apply(t(X),2,mean) #
+plot(X[1,],type="l")
+hist(X[1,],breaks="Scott",freq = FALSE)
+#plot(density(X[1,]))
+lines(density(X[1,]), col = "orange", lwd = 2)
+rug(X[1,])
+
+plot(X[2,],type="l")
+hist(X[2,])
+plot(X[3,],type="l")
+hist(X[3,])
 X<-t(X)
 
 
@@ -48,8 +64,7 @@ m=5 #独立成分の数
 # scan 関数で再読み込み(結果はベクトル)
 
 
-
-fastICAmult<-function(X,m,W=matrix(runif(p^2,-sqrt(3),sqrt(3)),p),maxcnt=10000,epsilon=0.0001){
+fastICAmult<-function(X,m,W=signaldata("unif",m,m),maxcnt=10000,epsilon=0.0001){
     if(dim(X)[2]>dim(X)[1]){ #行:siganl,列:標本
         X<-t(X);
     }
@@ -64,8 +79,9 @@ fastICAmult<-function(X,m,W=matrix(runif(p^2,-sqrt(3),sqrt(3)),p),maxcnt=10000,e
     #S<-original_unifdata(p,n); #p,n #この辺が変？
     #X=A%*%S; #p,n
     #X<-X-apply(t(X),2,mean) #ok
-    V<-svd(var(X))$u%*%diag(1/sqrt(svd(var(X))$d))%*%t(svd(var(X))$u)
-    Z=V%*%t(X); #whiting
+    #X<-t(X);
+    V<-svd(var(X))$u%*%diag(1/sqrt(svd(var(X))$d))%*%t(svd(var(X))$u);
+    Z<-V%*%t(X); #whiting
     #Z=V%*%X #ok
 #W <- matrix(scan("W_init01.txt"), nrow=m) #ok
     W<-t(W)
@@ -102,18 +118,32 @@ fastICAmult<-function(X,m,W=matrix(runif(p^2,-sqrt(3),sqrt(3)),p),maxcnt=10000,e
             cnt=cnt+1;
         }
     }
-    return(W)
+    
+    return(list(V=V,W=W,Z=Z))
 }
 
-W<-fastICAmult(X,m)
+result<-fastICAmult(X,m)
+V<-result$V
+dim(V)
+
+W<-result$W
+W
+
+Z<-result$Z
 
 W%*%t(W)
-
 t(W)%*%V%*%A
-W%*%X
 dim(W)
 dim(X)
-S
+
+#Wの列の順番を変更
+restoredsignal=as.vector(t(W[,3])%*%Z[,1:n])
+plot(restoredsignal,type="l") #
+hist(restoredsignal,breaks="Scott",freq = FALSE)
+#plot(density(X[1,]))
+lines(density(restoredsignal), col = "orange", lwd = 2)
+rug(restoredsignal)
+
 ###################################################
 S=0
 i=2
