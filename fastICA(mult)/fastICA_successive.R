@@ -1,17 +1,20 @@
 #複数の独立成分を推定するfastICA
 
 library(splus2R);
-library(VGAM)
-setwd("/home/th4/Dropbox/seminer/fastICA/fastICA(mult)")
+library(VGAM);
+setwd("/home/th4/Dropbox/seminer/fastICA/fastICA(mult)");
 
-source("signaldata.R")
+source("signaldata.R");
+source("fastICA_func.R");
 
 
 n=10000
-p=5
+p=4
 #dim(signaldata("unif",p,n))
-S<-signaldata("laplace",p,n) #p,n
-S<-signaldata("unif",p,n) #p,n
+S1<-signaldata("laplace",2,n)
+S2<-signaldata("unif",2,n)
+S<-rbind(S1,S2)
+#dim(S)
 
 plot(S[1,],type="l")
 hist(S[1,],breaks="Scott",freq = FALSE)
@@ -24,7 +27,7 @@ rug(S[1,])
 #  plot(S[3,],type="l")
 #  hist(S[3,])
 
-#write(S, file="./uniformdata01.txt")
+write(S, file="./laplacedata01.txt")
 # scan 関数で再読み込み(結果はベクトル)
 #S <- matrix(scan("uniformdata01.txt"), ncol=n) #ok
 #S[,1:2] #ok
@@ -57,70 +60,12 @@ X<-t(X)
 
 ###################
 
-m=5 #独立成分の数
+m=4 #独立成分の数
 #W<-diag(rep(1,m)) #初期値:単位行列
 #W<-original_unifdata(m,m)
 #write(W, file="./W_init01.txt")
 # scan 関数で再読み込み(結果はベクトル)
 
-
-fastICAmult<-function(X,m,W=signaldata("unif",m,m),maxcnt=10000,epsilon=0.0001){
-    if(dim(X)[2]>dim(X)[1]){ #行:siganl,列:標本
-        X<-t(X);
-    }
-    #X<-t(X);
-    #2.whiting
-    #E<-eigen(var(X))$vectors;
-    #Dm12<-diag(1/sqrt(eigen(var(X))$values));
-    #V<-E%*%Dm12%*%t(E); #ok
-    #S <- matrix(scan("whitinguniformdata01.txt"), ncol=n);
-    #cat(dim(S),"\n");
-    #S<-signaldata("unif",m,n);
-    #S<-original_unifdata(p,n); #p,n #この辺が変？
-    #X=A%*%S; #p,n
-    #X<-X-apply(t(X),2,mean) #ok
-    #X<-t(X);
-    V<-svd(var(X))$u%*%diag(1/sqrt(svd(var(X))$d))%*%t(svd(var(X))$u);
-    Z<-V%*%t(X); #whiting
-    #Z=V%*%X #ok
-#W <- matrix(scan("W_init01.txt"), nrow=m) #ok
-    W<-t(W)
-    #ノルム1にする
-    for(i in 1:m){
-        W[,i]<-W[,i]/vecnorm(W[,i])
-    }
-    i=1;
-    while(i<=m){
-        cat("Independent Component:",i,"\n");
-        cnt=0;
-        while(cnt<maxcnt){
-            #cat("cnt:",cnt,"\n")
-            #5.
-            wbefore<-W[,i]
-            W[,i]<-apply(t(t(Z)*tanh(t(W[,i])%*%Z)[1,]),1,mean)-mean(1-(tanh(t(W[,i])%*%Z)[1,])^2)*W[,i];
-            #6.グラムシュミットの直交化
-            if(2<=i){
-                Sum=0;
-                for(j in 1:(i-1)){
-                    Sum<-Sum+(t(W[,i])%*%W[,j])*W[,j];
-                }
-                W[,i]<-W[,i]-Sum; #2<=i
-            }
-            #7.収束したか?
-            W[,i]<-W[,i]/vecnorm(W[,i]);
-            #cat("W[,i]:",W[,i],"\n\n")            
-            if(1-epsilon<=abs(t(wbefore)%*%W[,i]) && abs(t(wbefore)%*%W[,i])<=1+epsilon){
-                cat("cnt:",cnt,"\n");
-                cat("W[,i]:",W[,i],"\n\n");
-                i<-i+1;
-                cnt=maxcnt;
-            }
-            cnt=cnt+1;
-        }
-    }
-    
-    return(list(V=V,W=W,Z=Z))
-}
 
 result<-fastICAmult(X,m)
 V<-result$V
@@ -133,16 +78,19 @@ Z<-result$Z
 
 W%*%t(W)
 t(W)%*%V%*%A
-dim(W)
-dim(X)
 
-#Wの列の順番を変更
-restoredsignal=as.vector(t(W[,3])%*%Z[,1:n])
-plot(restoredsignal,type="l") #
-hist(restoredsignal,breaks="Scott",freq = FALSE)
-#plot(density(X[1,]))
-lines(density(restoredsignal), col = "orange", lwd = 2)
-rug(restoredsignal)
+restoredsignal<-result$restoredsignal
+
+#split.screen(c(1,3),screen=2)
+
+par(mfrow=c(2,2))
+#plot(restoredsignal[1,],type="l") #
+for(i in 1:4){
+    hist(restoredsignal[i,],breaks="Scott",freq = FALSE)
+    #plot(density(X[1,]))
+    lines(density(restoredsignal[i,]), col = "orange", lwd = 2)
+    rug(restoredsignal[i,])
+}
 
 ###################################################
 S=0
