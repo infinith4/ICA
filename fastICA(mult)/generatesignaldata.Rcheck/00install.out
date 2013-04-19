@@ -1,0 +1,12 @@
+* installing *source* package ‘generatesignaldata’ ...
+** R
+** preparing package for lazy loading
+** help
+ 警告： /home/th4/Dropbox/seminer/fastICA/fastICA(mult)/generatesignaldata.Rcheck/00_pkg_src/generatesignaldata/man/generatesignaldata-package.Rd:32: All text must be in a section 
+ 警告： /home/th4/Dropbox/seminer/fastICA/fastICA(mult)/generatesignaldata.Rcheck/00_pkg_src/generatesignaldata/man/generatesignaldata-package.Rd:33: All text must be in a section 
+*** installing help indices
+ 以下にエラー Rd_info(db[[i]]) : 
+   '/home/th4/Dropbox/seminer/fastICA/fastICA(mult)/generatesignaldata.Rcheck/00_pkg_src/generatesignaldata/man/rlaplace.Rd' 中に欠如もしくは空の 	itle 欄があります 
+ Rdファイルには、空でない 	itle がなければならなりません 
+ マニュアル 'Writing R Extensions' 中の章 'Writing R documentation' を参照してください． 
+* removing ‘/home/th4/Dropbox/seminer/fastICA/fastICA(mult)/generatesignaldata.Rcheck/generatesignaldata’

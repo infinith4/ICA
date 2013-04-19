@@ -1,0 +1,17 @@
+* using log directory ‘/home/th4/Dropbox/seminer/fastICA/fastICA(mult)/generatesignaldata.Rcheck’
+* using R version 2.15.0 (2012-03-30)
+* using platform: i686-pc-linux-gnu (32-bit)
+* using session charset: UTF-8
+* checking for file ‘generatesignaldata/DESCRIPTION’ ... OK
+* checking extension type ... Package
+* this is package ‘generatesignaldata’ version ‘0.0.2’
+* checking CRAN incoming feasibility ... NOTE
+New submission
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for executable files ... OK
+* checking whether package ‘generatesignaldata’ can be installed ... ERROR
+Installation failed.
+See ‘/home/th4/Dropbox/seminer/fastICA/fastICA(mult)/generatesignaldata.Rcheck/00install.out’ for details.

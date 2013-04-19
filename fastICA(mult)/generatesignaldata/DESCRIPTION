@@ -1,0 +1,10 @@
+Package: generatesignaldata
+Type: Package
+Title: Document Similarity
+Version: 0.0.2
+Date: 2013-04-15
+Author: Hiroshi TASHIRO
+Maintainer: Hiroshi TASHIRO <tashirohiro4@gmail.com>
+Description: This package generate signal data.
+License: BSD
+Depends: VGAM
